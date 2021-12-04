@@ -1,5 +1,5 @@
-import os
-import pathlib
+#import os
+#import pathlib
 
 import dash
 from dash import dcc
@@ -16,20 +16,15 @@ cf.set_config_file(offline=False, world_readable=True)
 
 
 # ============================================================ Initialize app ============================================================
-app = dash.Dash(
-    __name__,
-    meta_tags=[
-        {"name": "viewport", "content": "width=device-width, initial-scale=1.0"}
-    ],
-)
+app = dash.Dash(__name__, meta_tags=[{"name": "viewport", "content": "width=device-width, initial-scale=1.0"}],)
 app.title = "Pollution Proxy"
 server = app.server
 
 
 # ============================================================ Load data ============================================================
-APP_PATH = str(pathlib.Path(__file__).parent.resolve())
-print("App location: ",APP_PATH)
-print("\n")
+#APP_PATH = str(pathlib.Path(__file__).parent.resolve())
+#print("App location: ",APP_PATH)
+#print("\n")
 
 # Geojson
 with urlopen('https://raw.githubusercontent.com/plotly/datasets/master/geojson-counties-fips.json') as response:
@@ -37,12 +32,9 @@ with urlopen('https://raw.githubusercontent.com/plotly/datasets/master/geojson-c
 
 
 # Geomapping data
-df_lat_lon = pd.read_csv(
-    os.path.join(APP_PATH, "us-county-boundaries.csv"),
-    delimiter=';'
-)
-print("Lat-Lon Data Columns: ",df_lat_lon.columns)
-print("\n")
+df_lat_lon = pd.read_csv("us-county-boundaries.csv", delimiter=';')
+#print("Lat-Lon Data Columns: ",df_lat_lon.columns)
+#print("\n")
 
 # GEOID is what this whole section is trying to do (except for zero filling the state code)
 # Need to cast them as strings, as they are int64 types
@@ -58,11 +50,9 @@ df_lat_lon["Longitude"] = lat_lon.apply(lambda x: x[1])
 
 
 # AQI data
-df_full_data = pd.read_csv(
-    os.path.join(APP_PATH, "finalprojectdata_metrics_from_2014.csv")
-)
-print("AQI Data Columns: ",df_full_data.columns)
-print("\n")
+df_full_data = pd.read_csv("finalprojectdata_metrics_from_2014.csv")
+# print("AQI Data Columns: ",df_full_data.columns)
+# print("\n")
 
 df_full_data["FIPS"] = df_full_data["countyFIPS"].apply(lambda x: str(x).zfill(5))  # Fill just in case
 
@@ -71,15 +61,11 @@ maxAQI = max(df_full_data["Median AQI"])
 
 
 # Predicted data
-df_2020_forecast = pd.read_csv(
-    os.path.join(APP_PATH, "forecasting_2020.csv")
-)
+df_2020_forecast = pd.read_csv("forecasting_2020.csv")
 df_2020_forecast["FIPS"] = df_2020_forecast["countyFIPS"].apply(lambda x: str(x).zfill(5))  # Fill just in case
 df_2020_forecast.rename(columns={"Median_AQI": "Median AQI"}, inplace=True)
 
-df_2021_forecast = pd.read_csv(
-    os.path.join(APP_PATH, "forecasting_2021.csv")
-)
+df_2021_forecast = pd.read_csv("forecasting_2021.csv")
 df_2021_forecast["FIPS"] = df_2021_forecast["countyFIPS"].apply(lambda x: str(x).zfill(5))  # Fill just in case
 df_2021_forecast.rename(columns={"Median_AQI": "Median AQI"}, inplace=True)
 
